@@ -45,6 +45,7 @@ public class ErrorHandler {
         log.error(sw.toString());
         return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error: {}", sw.toString());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleDateTimeException(final DateTimeException e) {
