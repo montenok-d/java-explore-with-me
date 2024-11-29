@@ -45,4 +45,14 @@ public class ErrorHandler {
         log.error(sw.toString());
         return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error: {}", sw.toString());
     }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleDateTimeException(final DateTimeException e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        log.error(sw.toString());
+        return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Incorrect DateTime parameters: {}", sw.toString());
+    }
+
 }
