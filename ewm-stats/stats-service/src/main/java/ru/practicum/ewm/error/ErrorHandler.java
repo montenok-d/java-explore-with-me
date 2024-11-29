@@ -6,6 +6,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -53,7 +54,17 @@ public class ErrorHandler {
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
         log.error(sw.toString());
-        return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Incorrect DateTime parameters: {}", sw.toString());
+        return new ApiError(HttpStatus.BAD_REQUEST, "Incorrect DateTime parameters: {}", sw.toString());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleMissingServletRequestParameterException(final MissingServletRequestParameterException e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        log.error(sw.toString());
+        return new ApiError(HttpStatus.BAD_REQUEST, "Bad request exception:", sw.toString());
     }
 
 }
