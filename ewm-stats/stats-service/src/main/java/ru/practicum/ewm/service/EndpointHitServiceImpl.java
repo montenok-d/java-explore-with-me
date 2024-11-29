@@ -7,6 +7,7 @@ import ru.practicum.ewm.ViewStatsDto;
 import ru.practicum.ewm.mapper.EndpointHitMapper;
 import ru.practicum.ewm.repository.EndpointHitRepository;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,6 +24,12 @@ public class EndpointHitServiceImpl implements EndpointHitService {
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris,
                                        boolean unique) {
+        if (start == null || end == null) {
+            throw new DateTimeException("End time and start time is required.");
+        }
+        if (start.isAfter(end)) {
+            throw new DateTimeException("End time is earlier than start time .");
+        }
         if (unique && !uris.isEmpty()) {
             return endpointHitRepository.findAllHitsWithUniqueIpWithUris(uris, start, end);
         }
