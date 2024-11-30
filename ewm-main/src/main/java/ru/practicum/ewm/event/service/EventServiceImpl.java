@@ -19,7 +19,6 @@ import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exception.DateTimeException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.exception.ValidationException;
-import ru.practicum.ewm.request.repository.RequestRepository;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
 
@@ -38,7 +37,6 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-    private final RequestRepository requestRepository;
     private final StatsClient statsClient;
 
     @Override
@@ -153,39 +151,7 @@ public class EventServiceImpl implements EventService {
             }
         }
 
-        if (updateEvent.getEventDate() != null) {
-            if (updateEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-                throw new DateTimeException("Event cannot be published earlier than 1 hour before date of event.");
-            } else {
-                event.setEventDate(updateEvent.getEventDate());
-            }
-        }
-        if (updateEvent.getAnnotation() != null && !updateEvent.getAnnotation().isBlank()) {
-            event.setAnnotation(updateEvent.getAnnotation());
-        }
-        if (updateEvent.getCategory() != null) {
-            Category category = categoryRepository.findById(updateEvent.getCategory())
-                    .orElseThrow(() -> new NotFoundException("Category id: " + updateEvent.getCategory() + "not found."));
-            event.setCategory(category);
-        }
-        if (updateEvent.getDescription() != null && !updateEvent.getDescription().isBlank()) {
-            event.setDescription(updateEvent.getDescription());
-        }
-        if (updateEvent.getLocation() != null) {
-            event.setLocation(updateEvent.getLocation());
-        }
-        if (updateEvent.getPaid() != null) {
-            event.setPaid(updateEvent.getPaid());
-        }
-        if (updateEvent.getParticipantLimit() != null) {
-            event.setParticipantLimit(updateEvent.getParticipantLimit());
-        }
-        if (updateEvent.getRequestModeration() != null) {
-            event.setRequestModeration(updateEvent.getRequestModeration());
-        }
-        if (updateEvent.getTitle() != null && !updateEvent.getTitle().isBlank()) {
-            event.setTitle(updateEvent.getTitle());
-        }
+        validateEventToUpdate(EventMapper.toUpdateDto(updateEvent), event);
         setViews(List.of(event));
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
@@ -259,6 +225,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException("Event id: " + eventId + "not found."));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User id: " + userId + " not found"));
+
         if (!event.getInitiator().getId().equals(userId)) {
             throw new ValidationException("User with id: " + userId + " is not initiator of the event");
         }
@@ -274,6 +241,12 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Published event couldn't be updated");
         }
 
+        validateEventToUpdate(EventMapper.toUpdateDto(updateEvent), event);
+        setViews(List.of(event));
+        return EventMapper.toEventFullDto(event);
+    }
+
+    private void validateEventToUpdate(UpdateEventRequest updateEvent, Event event) {
         if (updateEvent.getEventDate() != null) {
             if (updateEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
                 throw new DateTimeException("Event cannot be published earlier than 1 hour before date of event.");
@@ -307,8 +280,6 @@ public class EventServiceImpl implements EventService {
         if (updateEvent.getTitle() != null && !updateEvent.getTitle().isBlank()) {
             event.setTitle(updateEvent.getTitle());
         }
-        setViews(List.of(event));
-        return EventMapper.toEventFullDto(event);
     }
 
     private void setViews(List<Event> events) {
