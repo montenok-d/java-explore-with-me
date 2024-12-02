@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.EndpointHitDto;
 import ru.practicum.ewm.ViewStatsDto;
@@ -19,6 +20,7 @@ public class EndpointHitController {
     private final EndpointHitService endpointHitService;
 
     @PostMapping("/hit")
+    @ResponseStatus(HttpStatus.CREATED)
     public void saveHit(@Valid @RequestBody EndpointHitDto endpointHitDto) {
         log.info("Stats-service: save hit '{}'", endpointHitDto);
         endpointHitService.save(endpointHitDto);
