@@ -149,6 +149,7 @@
 									"        const initiator = await api.addUser(rnd.getUser());",
 									"        const author = await api.addUser(rnd.getUser());",
 									"        pm.collectionVariables.set(\"author_id\", author.id);",
+									"        pm.collectionVariables.set(\"user_id\", author.id);",
 									"",
 									"        const category = await api.addCategory(rnd.getCategory());",
 									"        let event = await api.addEvent(initiator.id, rnd.getEvent(category.id));",
