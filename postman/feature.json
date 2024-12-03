@@ -1033,7 +1033,7 @@
 					"        };",
 					"    }",
 					"",
-					"    getFutureDateTime(hourShift = 3, minuteShift=0, yearShift=0) {",
+					"    getFutureDateTime(hourShift = 0, minuteShift=0, yearShift=1) {",
 					"        let moment = require('moment');",
 					"",
 					"        let m = moment();",
@@ -1088,11 +1088,6 @@
 		},
 		{
 			"key": "event_id",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "parent_id",
 			"value": "",
 			"type": "string"
 		},
