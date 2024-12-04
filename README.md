@@ -1,7 +1,7 @@
 # java-explore-with-me
 
 ## КОММЕНТАРИИ К СОБЫТИЯМ
-**PULL-REQUEST:** https://github.com/montenok-d/java-explore-with-me/pull/3
+**PULL-REQUEST:** https://github.com/montenok-d/java-explore-with-me/pull/4
 
 ### Endpoints
 

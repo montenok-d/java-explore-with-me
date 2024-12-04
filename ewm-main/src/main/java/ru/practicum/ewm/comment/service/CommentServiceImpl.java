@@ -74,11 +74,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(long userId, long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("Comment id: " + commentId + " not found"));
-        if (!comment.getAuthor().getId().equals(userId)) {
-            throw new ValidationException("Only comment's author can delete their comment.");
-        }
         commentRepository.deleteById(commentId);
     }
 
@@ -96,8 +91,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteCommentByAdmin(long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("Comment id: " + commentId + " not found"));
         commentRepository.deleteById(commentId);
     }
 }
