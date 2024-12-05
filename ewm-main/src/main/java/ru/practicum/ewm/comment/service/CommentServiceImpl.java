@@ -19,6 +19,7 @@ import ru.practicum.ewm.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +75,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(long userId, long commentId) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        if (comment.isPresent()) {
+            if (!comment.get().getAuthor().getId().equals(userId)) {
+                throw new ValidationException("Only comment's author can delete their comment.");
+            }
+        }
         commentRepository.deleteById(commentId);
     }
 
